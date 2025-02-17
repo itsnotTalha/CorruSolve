@@ -14,40 +14,41 @@ public class Blockchain {
     }
 
     private Block createGenesisBlock() {
-        return new Block(0, new ArrayList<>(), "0");
+        return new Block(0, new ArrayList<>(), "0", "Genesis Block");
     }
 
     public void addTransaction(String sender, String receiver, double amount) {
         Transaction transaction = new Transaction(sender, receiver, amount);
         transactionPool.addTransaction(transaction);
-        System.out.println("Transaction added: " + transaction);
+        System.out.println("✅ Transaction added: " + transaction);
     }
 
     public void mineBlock() {
         if (transactionPool.getTransactions().isEmpty()) {
-            System.out.println("No transactions to mine.");
+            System.out.println("⚠️ No transactions to mine.");
             return;
         }
 
         Block previousBlock = chain.get(chain.size() - 1);
-        Block newBlock = new Block(chain.size(), new ArrayList<>(transactionPool.getTransactions()), previousBlock.getHash());
+        Block newBlock = new Block(chain.size(), new ArrayList<>(transactionPool.getTransactions()), previousBlock.getHash(), "Block " + chain.size());
         newBlock.mineBlock(difficulty);
 
         chain.add(newBlock);
         transactionPool.clear();
-        System.out.println("Block " + newBlock.getHash() + " added to blockchain!");
+        System.out.println("✅ Block " + newBlock.getHash() + " added to the blockchain!");
     }
 
     public void printBlockchain() {
         for (Block block : chain) {
-            System.out.println("\nBlock #" + block.getHash());
-            System.out.println("Previous Hash: " + block.getPreviousHash());
-            System.out.println("Transactions:");
+            System.out.println("\n🔗 Block Hash: " + block.getHash());
+            System.out.println("🔙 Previous Hash: " + block.getPreviousHash());
+            System.out.println("📜 Transactions:");
             for (Transaction t : block.getTransactions()) {
-                System.out.println("  " + t);
+                System.out.println("  - " + t);
             }
         }
     }
+
     public Block getBlockByIndex(int index) {
         if (index < 0 || index >= chain.size()) {
             System.out.println("❌ Block not found!");
@@ -65,5 +66,4 @@ public class Blockchain {
         System.out.println("❌ Block not found!");
         return null;
     }
-
 }
